@@ -1,7 +1,7 @@
 import urllib2
 import urllib
 import json
-from movie import Movie
+from movie import Movie,TVShow
 from movie import create_tables
 from genre_list import get_genre_list
 from credentials import netflix_id, api_url
@@ -14,7 +14,6 @@ from credentials import netflix_id, api_url
 def main():
 	list_total = float(len(get_genre_list()))
 	for index, genre in enumerate(get_genre_list()):
-		print 'Percentage complete: ' + str(index+1 / list_total) + '%'
 		max_video = 600
 		should_continue = True
 		while should_continue:
@@ -45,13 +44,14 @@ def sucker_punch(genre,max_video):
 			videos = value['videos']
 			for video in videos.keys():
 				if video.isdigit():
-					movie = Movie.new_movie(videos[video])
+					if videos[video].has_key('summary') and videos[video]['summary']['type'] == 'movie':
+						Movie.new_movie(videos[video])
+					else:
+						TVShow.new_show(videos[video]) 
 					counter += 1
-		print counter
+		print genre
 		if counter == 600:
-			print genre
 			return False
 		return True
-
 
 main()

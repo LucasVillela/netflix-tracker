@@ -29,7 +29,21 @@ class Movie(BaseModel):
 		movie = Movie(movie_id=movieid, title=title, updated_at=datetime.now(), created_at=datetime.now())
 		movie.save()
 
+class TVShow(BaseModel):
+	tvshow_id = IntegerField()
+	title = TextField()
+	total_seasons = IntegerField(default=1)
+	updated_at = DateField()
+	created_at = DateField()
+
+	@staticmethod
+	def new_show(obj):
+		tvshowid = obj['summary']['id']
+		title = obj['title']
+		tvshow = TVShow(tvshow_id=tvshowid, title=title, updated_at=datetime.now(), created_at=datetime.now())
+		tvshow.save()
+
 
 def create_tables():
 	psql_db.connect()
-	psql_db.create_tables([Movie])
+	psql_db.create_tables([TVShow])
