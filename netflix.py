@@ -45,9 +45,9 @@ def sucker_punch(genre,max_video):
 			for video in videos.keys():
 				if video.isdigit():
 					if videos[video].has_key('summary') and videos[video]['summary']['type'] == 'movie':
-						Movie.new_movie(videos[video])
+						Movie.save_movie(videos[video])
 					else:
-						TVShow.new_show(videos[video]) 
+						TVShow.save_show(videos[video]) 
 					counter += 1
 		print genre
 		if counter == 600:
