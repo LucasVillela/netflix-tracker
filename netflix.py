@@ -1,7 +1,7 @@
 import urllib2
 import urllib
 import json
-from movie import Movie,TVShow
+from movie import Movie,TVShow,WhereTo
 from movie import create_tables
 from genre_list import get_genre_list
 from credentials import netflix_id, api_url
@@ -45,9 +45,9 @@ def sucker_punch(genre,max_video):
 			for video in videos.keys():
 				if video.isdigit():
 					if videos[video].has_key('summary') and videos[video]['summary']['type'] == 'movie':
-						Movie.save_movie(videos[video])
+						WhereTo.save_movie(videos[video])
 					else:
-						TVShow.save_show(videos[video]) 
+						WhereTo.save_show(videos[video]) 
 					counter += 1
 		print genre
 		if counter == 600:
