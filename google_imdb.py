@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*- 
-from grab import Grab
+from grab import Grab,GrabTimeoutError
 import re
 from model import Movie,TVShow
 from time import sleep
@@ -16,14 +16,14 @@ class GoogleImdb:
 		except GrabTimeoutError as e:
 			return None
 		search_result = g.doc('//a[contains(@class, "l")]/@href').text_list()
-		imdb_ids = None
+		imdb_ids = []
 		for item in search_result:
 			list_found = re.findall(r'www.imdb.com/title/tt[0-9]*',item)
 			if len(list_found) > 0:
 				for imdb in list_found:
-					imdb_ids = re.findall(r'tt[0-9]*',imdb)
+					imdb_ids.append(re.findall(r'tt[0-9]*',imdb)[0])
 
-		if imdb_ids is not None:
+		if len(imdb_ids) > 0:
 			return imdb_ids[0]
 		return None
 
@@ -35,8 +35,6 @@ def finder():
 		print imdb_id
 		movie.imdb_id = imdb_id
 		movie.save()
-		sleep(1)
-
-
+		sleep(0.5)
 
 finder()
