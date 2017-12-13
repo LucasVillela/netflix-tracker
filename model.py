@@ -21,6 +21,7 @@ class Movie(BaseModel):
 	title = TextField()
 	updated_at = DateTimeField()
 	created_at = DateTimeField()
+	imdb_id = TextField()
 
 	@staticmethod
 	def new_movie(obj):
@@ -43,6 +44,7 @@ class TVShow(BaseModel):
 	total_seasons = IntegerField(default=1)
 	updated_at = DateTimeField()
 	created_at = DateTimeField()
+	imdb_id = TextField()
 
 	@staticmethod
 	def new_show(obj):

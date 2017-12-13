@@ -2,11 +2,10 @@
 import urllib2
 import urllib
 import json
-from movie import Movie,TVShow,WhereTo
-from movie import create_tables
+from model import Movie,TVShow,WhereTo
+from model import create_tables
 from genre_list import get_genre_list
 from credentials import netflix_id, api_url
-from google_imdb import GoogleImdb
 
 
 #create_tables()
@@ -56,8 +55,4 @@ def sucker_punch(genre,max_video):
 			return False
 		return True
 
-#main()
-
-movie_title = 'Invencível'
-movie = Movie.get( Movie.title == movie_title)
-print GoogleImdb.search_imdbid_on_google(movie.title)
+main()
