@@ -3,6 +3,7 @@ from grab import Grab,GrabTimeoutError
 import re
 from model import Movie,TVShow
 from time import sleep
+from random import randint
 
 class GoogleImdb:
 	@staticmethod
@@ -35,6 +36,6 @@ def finder():
 		print imdb_id
 		movie.imdb_id = imdb_id
 		movie.save()
-		sleep(0.5)
+		sleep(randint(2, 9))
 
 finder()
