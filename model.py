@@ -85,6 +85,7 @@ class OMDB(BaseModel):
 	dvd = TextField(null=True)
 	production = TextField(null=True)
 	website = TextField(null=True)
+	box_office = TextField(null=True)
 
 class OMDB_Actors(BaseModel):
 	imdb_id = ForeignKeyField(OMDB, related_name = 'owner')
