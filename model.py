@@ -59,8 +59,36 @@ class TVShow(BaseModel):
 		tvshow.updated_at = datetime.now()
 		tvshow.save()
 
+class Actor(BaseModel):
+	name = TextField(unique = True)
 
+class OMDB(BaseModel):
+	imdb_id = TextField(primary_key = True, unique = False)
+	title = TextField(null=True)
+	year = TextField(null=True)
+	rated = TextField(null=True)
+	released = TextField(null=True)
+	runtime = TextField(null=True)
+	genre = TextField(null=True)
+	director = TextField(null=True)
+	writer = TextField(null=True)
+	plot = TextField(null=True)
+	language = TextField(null=True)
+	country = TextField(null=True)
+	awards = TextField(null=True)
+	poster = TextField(null=True)
+	metascore = TextField(null=True)
+	imdb_rating = TextField(null=True)
+	rotten_tomatoes = TextField(null=True)
+	metacritic = TextField(null=True)
+	imdb_votes = TextField(null=True)
+	dvd = TextField(null=True)
+	production = TextField(null=True)
+	website = TextField(null=True)
 
+class OMDB_Actors(BaseModel):
+	imdb_id = ForeignKeyField(OMDB, related_name = 'owner')
+	actor = ForeignKeyField(Actor, related_name = 'child')
 
 class WhereTo():
 
@@ -83,4 +111,4 @@ class WhereTo():
 
 def create_tables():
 	psql_db.connect()
-	psql_db.create_tables([TVShow])
+	psql_db.create_tables([Actor, OMDB, OMDB_Actors])

@@ -2,13 +2,13 @@
 import urllib2
 import urllib
 import json
-from model import Movie,TVShow,WhereTo
+from model import Movie,TVShow,WhereTo,Actor,OMDB,OMDB_Actors
 from model import create_tables
 from genre_list import get_genre_list
 from credentials import netflix_id, api_url
 
 
-#create_tables()
+# create_tables()
 
 
 
