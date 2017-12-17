@@ -86,6 +86,10 @@ class OMDB(BaseModel):
 	production = TextField(null=True)
 	website = TextField(null=True)
 	box_office = TextField(null=True)
+	updated_at = DateTimeField()
+	
+	def __unicode__(self):
+		return unicode(self.some_field) or u''
 
 class OMDB_Actors(BaseModel):
 	imdb_id = ForeignKeyField(OMDB, related_name = 'owner')

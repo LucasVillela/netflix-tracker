@@ -2,8 +2,10 @@ from credentials import omdb_api_key
 from model import OMDB,Actor,Movie,OMDB_Actors
 from peewee import DoesNotExist
 from utils import get_url
+from datetime import datetime
 import urllib2
 import json
+import socket
 
 
 class OMDB_API:
@@ -12,7 +14,7 @@ class OMDB_API:
 		self.OMDB_URL = 'http://www.omdbapi.com/?i=xxxx&apikey=yyyy'
 		self.api_key = omdb_api_key()
 
-	def omdb_model(self, data, existing_omdb):
+	def omdb_model(self, data, existing_omdb, imdb_id):
 		omdb = None		
 		if existing_omdb is None:
 			omdb = OMDB()
@@ -58,16 +60,21 @@ class OMDB_API:
 			omdb.title = data['Title']
 		if data.has_key('Runtime'):
 			omdb.runtime = data['Runtime']
-		if data.has_key('imdbID'):
-			omdb.imdb_id = data['imdbID']
-		print omdb.title
+		if omdb.imdb_id is None:
+			omdb.imdb_id = imdb_id
+		omdb.updated_at = datetime.now()
+		try:
+			print imdb_id + ' ' + omdb.title
+		except Exception as e:
+			print imdb_id
+			pass
 
 		if existing_omdb is not None:
 			omdb.save()
 		else:
 			omdb.save(force_insert=True)
 
-	def actor_model(self, data):
+	def actor_model(self, data, imdb_id):
 		if data.has_key('Actors'):
 			actor_string = data['Actors']
 			actors = []
@@ -81,7 +88,7 @@ class OMDB_API:
 					actor.save()
 			for x in actors:
 				relationship = OMDB_Actors()
-				relationship.imdb_id = data['imdbID']
+				relationship.imdb_id = imdb_id
 				actor = Actor.get(Actor.name == x.name)
 				relationship.actor = actor.id
 				relationship.save()
@@ -90,24 +97,38 @@ class OMDB_API:
 		request = urllib2.Request(get_url(self.OMDB_URL, imdb_id, self.api_key))
 		handler = urllib2.HTTPHandler()
 		opener = urllib2.build_opener(handler)
-		response = opener.open(request)
+		response = None
+		try:
+			response = opener.open(request, timeout=5)
+		except urllib2.HTTPError as e:
+			print e
+			return False
+		except socket.timeout as e:
+			print e
+			return False
+		except socket.error as e:
+			print e
+			return False
 
-		if response.code == 200:
+		if response and response.code == 200:
 			data = json.loads(response.read())
 			omdb = None
 			try:
-				omdb = OMDB.get( OMDB.imdb_id == data['imdbID'])
-				self.omdb_model(data, omdb)
-				self.actor_model(data)
+				omdb = OMDB.get( OMDB.imdb_id == imdb_id)
+				self.omdb_model(data, omdb, imdb_id)
+				self.actor_model(data, imdb_id)
 			except DoesNotExist as e:
-				self.omdb_model(data, omdb)
-				self.actor_model(data)
+				self.omdb_model(data, omdb, imdb_id)
+				self.actor_model(data, imdb_id)
+		return True
 
 def finder():
 	movie_list = Movie.select().where(Movie.imdb_id != None)
 	omdbapi = OMDB_API()
 	for movie in movie_list:
-		omdbapi.get_movie_info(movie.imdb_id)
+		result = False
+		while not result:
+			result = omdbapi.get_movie_info(movie.imdb_id)
 
 
 finder()
